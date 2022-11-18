@@ -3,6 +3,7 @@ const router = express.Router();
 const Category = require('../categories/Category');
 const Article = require('./Article');
 const slugify = require('slugify');
+const { TimeoutError } = require('sequelize');
 
 
 router.get('/admin/articles', (req, res) => {
@@ -94,6 +95,45 @@ router.post('/articles/update', (req, res) => {
         }
     }).then(() => {
         res.redirect('/admin/articles');
+    });
+});
+
+router.get('/articles/page/:num', (req, res) => {
+    var page = req.params.num;
+    var limit = 4;
+    
+    if (isNaN(page) || page == 1){
+        offset = 0;
+    }else{
+        offset = (parseInt(page) - 1) * limit;
+    }
+
+    Article.findAndCountAll({
+        limit: limit,
+        offset: 2,
+        order: [
+            ['id', 'DESC']
+        ]
+    }).then(articles => {
+
+        var next;
+        if (offset + limit >= articles.count){
+            next = false;
+        }else{
+            next = true;
+        }
+
+        var result = {
+            page: parseInt(page),
+            next: next,
+            articles: articles
+        }
+
+        Category.findAll().then(categories => {
+            res.render('admin/articles/page', {result: result, categories: categories});
+            
+        });
+        
     });
 });
 

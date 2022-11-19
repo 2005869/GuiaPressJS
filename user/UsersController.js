@@ -10,6 +10,12 @@ router.get('/admin/users', (req, res) => {
     res.send('admin');
 });
 
+router.get('/admin/users/index', (req, res) => {
+    User.findAndCountAll().then((users) => {
+        res.render('admin/users/index', {users: users});
+    });
+});
+
 router.get('/admin/users/create', (req, res) => {
     res.render('admin/users/create');
 });

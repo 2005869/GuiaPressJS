@@ -1,0 +1,54 @@
+<%- include ('../../partials/header') %>
+
+<%- include ('../../partials/navbar') %>
+<body>
+    <div class="container">
+        <hr>
+        <h2>Usuários</h2>
+        <hr>
+        <h4>Atualmente contamos com <%= users.count %> usuários cadastrados</h4>
+        <hr>
+        <a class="btn btn-success" href="/admin/users/create">Criar novo usuário</a>
+        <hr>
+        <table class="table table-bodered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.rows.forEach(user => { %>
+                    <tr>
+                        <th><%= user.id %></th>
+                        <th><%= user.email %></th>
+                        <th>
+                                <a class="btn btn-warning" href="/admin/users/edit/<%= user.id %>">Editar</a>
+                                
+                            <form action="/users/delete" method="post" style="display: inline;" onsubmit="confirmarDelete(event, this)" >
+                                <input type="hidden" name="id" value="<%= user.id %>">
+                                <button class="btn btn-danger"> Deletar</button>
+                            </form>
+                        </th>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</body>
+<%- include ('../../partials/footer') %>
+
+<script>
+    function confirmarDelete(event, form){
+        event.preventDefault();
+        var decision  = confirm('Você quer mesmo deletar esse usuário?');
+        if (decision){
+            console.log('eu escolhi deletar');
+            form.submit();
+        }
+        else{
+            console.log('eu não quero deletar');
+        }
+    }
+</script>

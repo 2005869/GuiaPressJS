@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const connection = require('./database/database');
+const session = require('express-session');
 
 const categoriesController = require('./categories/CategoriesController');
 const articlesController = require('./articles/ArticlesController');
@@ -10,6 +11,7 @@ const usersController = require('./user/UsersController');
 const Article = require('./articles/Article');
 const Category = require('./categories/Category');
 const User = require('./user/User');
+const { application } = require('express');
 
 //view engine
 app.set('view engine', 'ejs');
@@ -32,9 +34,19 @@ connection.authenticate()
     console.log(error);
 })
 
+// session
+app.use(session({
+    secret: "gyagdfygaysdgafsdaa",
+    cookie: {maxAge: 30000}
+}));
+
+// use
 app.use('/', categoriesController);
 app.use('/', articlesController);
 app.use('/', usersController);
+
+
+
 
 
 // rotes

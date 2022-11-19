@@ -3,6 +3,8 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 
 const User = require('./User');
+const adminAuth = require('../middlewares/adminAuth');
+const session = require('express-session');
 
 
 // Rotes
@@ -75,6 +77,11 @@ router.post('/authenticate', (req, res) => {
     });
 });
 
+
+router.get('/logout', adminAuth, (req, res) => {
+    req.session.user = undefined;
+    res.redirect('/');
+});
 
 
 module.exports = router;
